@@ -1,6 +1,5 @@
 from dotenv import load_dotenv
 load_dotenv()
-
 from openai import OpenAI
 import streamlit as st
 import tempfile
@@ -8,10 +7,6 @@ import os
 from pathlib import Path
 import mimetypes
 import glob
-
-# Para obtener contexto de URL externa
-import requests
-from bs4 import BeautifulSoup
 
 # Check for OpenCV availability
 try:
@@ -29,7 +24,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if not st.session_state.authenticated:
     pw = st.text_input(
-        "Enter your super-ultra secret password (v26/06/2025 12:52h)",
+        "Enter your super-ultra secret password (v26/06/2025 12:41h)",
         type="password"
     )
     if pw == PASSWORD:
@@ -45,101 +40,203 @@ st.set_page_config(page_title="Convert Branded Video into Text")
 st.title("📝 Branded Video > Text AI Converter for SMN")
 
 # --- CARGA DE PROMPTS EXTERNOS ---
-# Carga todos los prompts desde .txt
-PROMPT_DIR = Path("prompts")
+def load_prompt(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        return file.read()
 
-def load_prompt(path):
-    with open(path, 'r', encoding='utf-8') as f:
-        return f.read()
+sites = {
+    "Valencia Secreta": load_prompt("prompts/sites/valencia_secreta.txt"),
+    "Barcelona Secreta": load_prompt("prompts/sites/barcelona_secreta.txt"),
+    "Madrid Secreto": load_prompt("prompts/sites/madrid_secreto.txt"),
+    "New York City": load_prompt("prompts/sites/nyc_secret.txt"),
+    "EXPERIMENTAL JAKUB": load_prompt("prompts/sites/experimental.txt")
+}
 
-# Sitios
-sites = {f.stem: load_prompt(f) for f in (PROMPT_DIR / "sites").glob("*.txt")}
-# Editores
-editors = {f.stem: load_prompt(f) for f in (PROMPT_DIR / "editors").glob("*.txt")}
-# Categorías
-categories = {f.stem: load_prompt(f) for f in (PROMPT_DIR / "category").glob("*.txt")}
-# Idiomas
-languages = {f.stem: load_prompt(f) for f in (PROMPT_DIR / "languages").glob("*.txt")}
+editors = {
+    "Fever Brand Writer": load_prompt("prompts/editors/brand-writer.txt"),
+}
+
+categories = {
+    "Food & Drink": load_prompt("prompts/category/food-and-drink.txt"),
+    "Live Shows": load_prompt("prompts/category/live-shows.txt"),
+    "Music Events": load_prompt("prompts/category/music-events.txt"),
+    "Activities": load_prompt("prompts/category/activities.txt"),
+    "Tourism": load_prompt("prompts/category/tourism.txt"),
+    "Nightlife & Party": load_prompt("prompts/category/nightlife-party.txt"),
+    "Family": load_prompt("prompts/category/family.txt"),
+    "Immersive Experiences & Exhibits": load_prompt("prompts/category/immersive-experiences-exhibits.txt"),
+    "Beauty & Wellness": load_prompt("prompts/category/beauty-wellness.txt"),
+    "Outdoor Activities": load_prompt("prompts/category/outdoor-activities.txt"),
+    "Culture": load_prompt("prompts/category/culture.txt"),
+    "Fever Originals": load_prompt("prompts/category/fever-originals.txt"),
+    "Candelight Concerts": load_prompt("prompts/category/candelight-concerts.txt"),
+    "Courses, Talks & Conventions": load_prompt("prompts/category/courses-talks-conventions.txt"),
+    "Fabrik": load_prompt("prompts/category/fabrik.txt"),
+    "Cinema": load_prompt("prompts/category/cinema.txt"),
+    "Flamenco": load_prompt("prompts/category/flamenco.txt"),
+    "Ballet of Lights": load_prompt("prompts/category/ballet-of-lights.txt"),
+    "Candelight Spring Concerts": load_prompt("prompts/category/candelight-spring-concerts.txt"),
+    "Sports Events": load_prompt("prompts/category/sports-events.txt"),
+    "Meetups": load_prompt("prompts/category/meetups.txt"),
+}
+
+languages = {
+    "English for US": load_prompt("prompts/languages/en-us.txt"),
+    "Español para España": load_prompt("prompts/languages/es-sp.txt")
+}
 
 # --- SELECCIÓN DE TIPO DE SUBIDA ---
 upload_type = st.radio(
-    "¿Qué quieres subir?",
-    ["Video", "Imagen"],
+    "What do you want to upload?",
+    ["Video", "Image"],
     horizontal=True
 )
 video_file = None
 image_file = None
 
-# Flags para metadata
-en_smn_video = True
+# Flags for metadata
+is_smn_video = True
 visual_analysis = False
 frame_interval = 1
 
-# --- CARGA DE ARCHIVOS TEMPORALES ---
+# --- FILE UPLOADER & OPTIONS ---
 if upload_type == "Video":
     video_file = st.file_uploader(
-        "Sube tu video (.mp4, .mov, .avi, .mp3, .wav, .ogg, .webm):",
+        "Upload your video (.mp4, .mov, .avi, .mp3, .wav, .ogg, .webm):",
         type=["mp4", "mov", "avi", "mpeg", "mp3", "wav", "ogg", "webm"]
     )
-    if video_file:
-        tmp = tempfile.NamedTemporaryFile(delete=False)
-        tmp.write(video_file.read())
-        tmp_path = tmp.name
-        tmp.close()
-    smn_choice = st.radio(
-        "¿Es un video de SMN?",
-        ["Sí", "No"],
+    is_smn = st.radio(
+        "Is this an SMN-owned video?",
+        ["Yes", "No"],
         horizontal=True,
-        key="smn_choice"
+        key="is_smn"
     )
-    en_smn_video = (smn_choice == "Sí")
-    if have_cv2 and video_file:
-        visual_analysis = st.checkbox(
-            "Marcar si NO tiene voz."
-        )
-        if visual_analysis:
-            frame_interval = st.slider(
-                "Extraer un frame cada N segundos", 1, 10, 1
+    is_smn_video = (is_smn == "Yes")
+    if video_file:
+        if have_cv2:
+            visual_analysis = st.checkbox(
+                "If this video DOESN'T include voice over, mark this box; if it does, leave it unchecked.",
+                key="visual_analysis"
             )
-elif upload_type == "Imagen":
+            if visual_analysis:
+                frame_interval = st.slider(
+                    "(Don't modify this unless you know what you're doing) Extract one frame every N seconds",
+                    1,
+                    10,
+                    1,
+                    key="frame_interval"
+                )
+        else:
+            st.warning(
+                "Frame analysis disabled: install 'opencv-python-headless' to enable this feature."
+            )
+elif upload_type == "Image":
     image_file = st.file_uploader(
-        "Sube una imagen (.jpg, .jpeg, .png):",
+        "Upload an image (.jpg, .jpeg, .png):",
         type=["jpg", "jpeg", "png"]
     )
-    if image_file:
-        tmp = tempfile.NamedTemporaryFile(delete=False)
-        tmp.write(image_file.read())
-        tmp_path = tmp.name
-        tmp.close()
-        # Aquí podrías añadir análisis de visión
 
-# --- METADATOS PARA VIDEO NO SMN ---
-if upload_type == "Video" and video_file and not en_smn_video:
-    network = st.selectbox(
-        "Red social:",
-        ["YouTube", "TikTok", "Instagram", "Facebook", "Twitter", "Otra"]
+# --- PROCESAMIENTO DE VÍDEO ---
+if upload_type == "Video" and video_file:
+    with tempfile.NamedTemporaryFile(
+        delete=False,
+        suffix=Path(video_file.name).suffix
+    ) as tmp:
+        tmp.write(video_file.read())
+        tmp_path = tmp.name
+    mime_type, _ = mimetypes.guess_type(tmp_path)
+    if not mime_type or not (
+        mime_type.startswith("video") or mime_type.startswith("audio")
+    ):
+        st.error("❌ Invalid file format for Whisper.")
+        os.remove(tmp_path)
+        st.stop()
+
+# --- PROCESAMIENTO DE IMAGEN ---
+elif upload_type == "Image" and image_file:
+    if "image_description" not in st.session_state:
+        image_bytes = image_file.read()
+        b64 = base64.b64encode(image_bytes).decode("utf-8")
+        with st.spinner("🧠 Analyzing image with GPT-4o..."):
+            resp = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "user", "content": [
+                        {"type": "text", "text": \
+                            "Describe this image in detail. " \
+                            "Focus on visual details, place, objects, text if any."
+                        },
+                        {"type": "image_url", "image_url": {"url":
+                            f"data:image/jpeg;base64,{b64}"}}]
+                    }
+                ],
+                max_tokens=800
+            )
+        st.session_state.image_description = resp.choices[0].message.content
+        st.success("✅ Image description generated")
+elif upload_type == "Image":
+    st.info("📸 Please upload an image to continue.")
+
+# --- PREVIEW IMAGEN ---
+if "image_description" in st.session_state:
+    st.text_area(
+        "🖼 Description of the image:",
+        st.session_state.image_description,
+        height=200,
+        key="image_desc_preview"
     )
-    username = st.text_input("Cuenta (ej: @usuario):")
-    original_url = st.text_input("URL del video:")
-    extra_video_prompt = st.text_area(
-        "Instrucciones extra (opcional):",
-        height=80
+
+# --- METADATOS PARA VÍDEO NO SMN ---
+if upload_type == "Video" and not is_smn_video and video_file:
+    network = st.selectbox(
+        "Social network:",
+        ["YouTube", "TikTok", "Instagram", "Facebook", "Twitter", "Other"],
+        key="video_network"
+    )
+    username = st.text_input(
+        "Account (example: @user123):",
+        key="video_username"
+    )
+    original_url = st.text_input(
+        "URL of the video:",
+        key="video_url"
+    )
+    tmp_extra_video = st.text_area(
+        "(Optional) Extra instructions for this non-SMN video \
+        (use as much context as you want):",
+        height=100,
+        key="extra_video_prompt"
     )
 
 # --- CONFIGURACIÓN DEL ARTÍCULO ---
-# Campo adicional: URL de contexto
-context_url = st.text_input("URL de contexto (opcional):")
 
-editor = st.selectbox("Editor:", ["Seleccionar...", *editors.keys()])
-site = st.selectbox("Sitio publicación:", ["Seleccionar...", *sites.keys()])
-category_key = st.selectbox("Categoría:", ["Seleccionar...", *categories.keys()])
-language_key = st.selectbox("Idioma salida:", ["Seleccionar...", *languages.keys()])
+# Campo adicional: URL de Fever como contexto
+context_url = st.text_input("URL de Fever:")
+
+editor = st.selectbox(
+    "Editor:",
+    ["Select...", *editors.keys()]
+)
+site = st.selectbox(
+    "Publish site:",
+    ["Select...", *sites.keys()]
+)
+category_key = st.selectbox(
+    "Content category:",
+    ["Select...", *categories.keys()]
+)
+language_key = st.selectbox(
+    "Output language:",
+    ["Select...", *languages.keys()]
+)
 extra_prompt = ""
-if site != "Seleccionar...":
-    extra_prompt = st.text_area("Instrucciones editor (opcional):", height=80)
+if site != "Select...":
+    extra_prompt = st.text_area(
+        "Additional editor instructions (optional):"
+    )
 
 # --- GENERAR ARTÍCULO ---
-if st.button("Crear artículo"):
+if st.button("✍️ Create article"):
     try:
         # Contexto adicional desde URL
         context_content = ""
@@ -148,103 +245,157 @@ if st.button("Crear artículo"):
                 r = requests.get(context_url)
                 r.raise_for_status()
                 soup = BeautifulSoup(r.text, 'html.parser')
-                # Tomar párrafos relevantes
-                paragraphs = soup.find_all('p')
-                context_content = '\n'.join(p.get_text() for p in paragraphs[:10])
+                # Tomar sólo los primeros 10 párrafos para no sobrecargar el prompt
+                paragraphs = soup.find_all('p')[:10]
+                context_content = '\n'.join(p.get_text() for p in paragraphs)
             except Exception as e:
                 st.warning(f"Error al extraer contexto: {e}")
 
-        # Transcripción / Análisis visual
+        # Transcripción y análisis visual
         transcription = ""
         visual_context = ""
-        if upload_type == "Video" and video_file:
-            # Análisis visual
+        if upload_type == "Video":
             if visual_analysis and have_cv2:
-                with st.spinner("Analizando frames..."):
+                with st.spinner(
+                    "🖼 Analyzing video frames (this may take some time)..."
+                ):
                     cap = cv2.VideoCapture(tmp_path)
                     fps = cap.get(cv2.CAP_PROP_FPS) or 25
-                    cnt = 0
+                    frame_count = 0
                     success, frame = cap.read()
                     while success:
-                        if cnt % int(fps * frame_interval) == 0:
-                            _, buf = cv2.imencode('.jpg', frame)
-                            b64 = base64.b64encode(buf).decode()
-                            resp_fr = client.chat.completions.create(
+                        if frame_count % int(fps * frame_interval) == 0:
+                            _, buffer = cv2.imencode('.jpg', frame)
+                            b64_frame = \
+                                base64.b64encode(buffer).decode("utf-8")
+                            resp = client.chat.completions.create(
                                 model="gpt-4o",
                                 messages=[
-                                    {"role":"user","content":[
-                                        {"type":"text","text":"Describe lo visual."},
-                                        {"type":"image_url","image_url":{"url":f"data:image/jpeg;base64,{b64}"}}
+                                    {"role": "user", "content": [
+                                        {"type": "text", "text":
+                                            "Describe visual elements in this frame."
+                                        },
+                                        {"type": "image_url", "image_url": {
+                                            "url":
+                                            f"data:image/jpeg;base64,{b64_frame}"}}
                                     ]}
-                                ], max_tokens=150)
-                            visual_context += resp_fr.choices[0].message.content + "\n"
+                                ],
+                                max_tokens=150
+                            )
+                            visual_context += (
+                                resp.choices[0].message.content + "\n"
+                            )
                         success, frame = cap.read()
-                        cnt += 1
+                        frame_count += 1
                     cap.release()
-            # Transcripción audio
-            with st.spinner("Transcribiendo audio..."):
-                with open(tmp_path, 'rb') as f:
+            with st.spinner("⏳ Transcribing audio with Whisper..."):
+                with open(tmp_path, "rb") as audio_f:
                     tr = client.audio.transcriptions.create(
-                        model='whisper-1', file=f, response_format='json')
+                        model="whisper-1",
+                        file=audio_f,
+                        response_format="json"
+                    )
                 transcription = tr.text
-            st.text_area("Transcripción:", transcription, height=200)
-            if visual_context:
-                st.text_area("Contexto visual:", visual_context, height=200)
-        elif upload_type == "Imagen" and image_file:
-            transcription = st.session_state.get('image_description', '')
-            st.text_area("Descripción imagen:", transcription, height=200)
+            st.success("✅ Transcription completed")
+            st.text_area(
+                "Transcribed text:",
+                transcription,
+                height=200,
+                key="video_text"
+            )
+            if visual_analysis and have_cv2:
+                st.text_area(
+                    "Visual context:",
+                    visual_context,
+                    height=200,
+                    key="visual_context"
+                )
+        elif upload_type == "Image" and "image_description" in st.session_state:
+            transcription = st.session_state.image_description
+            st.text_area(
+                "Image description:",
+                transcription,
+                height=200,
+                key="image_text_area"
+            )
         else:
-            st.error("Primero sube un video o imagen válida.")
+            st.error(
+                "❌ Upload a valid video or wait for image description."
+            )
             st.stop()
-
-        # Construir prompt final
-        prompt = ''
-        if site in sites:
-            prompt += sites[site]
-        if editor in editors:
-            prompt += f"\nEditor:\n{editors[editor]}"
+        # Construir prompt
+        full_prompt = sites[site]
         if context_content:
-            prompt += f"\nContexto extra desde {context_url}:\n{context_content}"
-        prompt += f"\nTranscripción:\n{transcription}"
-        if upload_type == "Video" and not en_smn_video:
-            prompt += f"\nInstrucciones video no SMN:\n{extra_video_prompt}\nRed: {network}\nCuenta: {username}\nURL original: {original_url}"
-        if visual_context:
-            prompt += f"\nContexto visual:\n{visual_context}"
-        if category_key in categories:
-            prompt += f"\nCategoría:\n{categories[category_key]}"
-        if language_key in languages:
-            prompt += f"\nIdioma:\n{languages[language_key]}"
+            full_prompt += f"\nContexto extra desde {context_url}:\n{context_content}"
+        if editor != "Select...":
+            full_prompt += f"\n\nEditor context:\n{editors[editor]}"
+        full_prompt += f"\n\nTranscription for article:\n{transcription}"
+        if upload_type == "Video" and not is_smn_video:
+            full_prompt += (
+                f"\n\nNon-SMN video instructions:\n{tmp_extra_video}"
+            )
+            full_prompt += (
+                f"\nSource network: {network}" +
+                f"\nOriginal account: {username}" +
+                f"\nOriginal URL: {original_url}"
+            )
+        if upload_type == "Video" and visual_analysis and have_cv2:
+            full_prompt += (
+                f"\n\nExtracted visual context:\n{visual_context}"
+            )
+        if category_key != "Select...":
+            full_prompt += (
+                f"\n\nCategory context:\n{categories[category_key]}"
+            )
+        if language_key != "Select...":
+            full_prompt += (
+                f"\n\nLanguage for article:\n{languages[language_key]}"
+            )
         if extra_prompt:
-            prompt += f"\nInstrucciones editor:\n{extra_prompt}"
-
-        # Fallback modelos
-        models = ["gpt-4o", "gpt-4", "gpt-3.5-turbo-16k", "gpt-3.5-turbo"]
+            full_prompt += (
+                f"\n\nAdditional editor instructions:\n{extra_prompt}"
+            )
+        # 3. Generar artículo con múltiples modelos de fallback
+        models = ["gpt-4o", "gpt-4", "gpt-3.5-turbo-16k", "gpt-3.5-turbo", "gpt-3.5"]
         resp = None
-        for m in models:
+        last_error = None
+        for model_name in models:
             try:
-                with st.spinner(f"Generando con {m}..."):
+                with st.spinner(f"🧠 Generating article using {model_name}..."):
                     resp = client.chat.completions.create(
-                        model=m,
+                        model=model_name,
                         messages=[
-                            {"role":"system","content":"Eres un redactor profesional."},
-                            {"role":"user","content":prompt}
+                            {"role": "system", "content": "Eres un redactor profesional especializado en contenido local."},
+                            {"role": "user", "content": full_prompt}
                         ],
                         temperature=0.7
                     )
+                st.info(f"✅ Generated with {model_name}")
                 break
-            except Exception:
-                continue
-        if not resp:
-            st.error("Fallaron todos los modelos.")
+            except Exception as e:
+                # Reintentar con siguiente modelo si error de modelo no encontrado o acceso
+                err_code = getattr(e, 'code', None)
+                if err_code == 'model_not_found' or ('does not have access' in str(e)):
+                    last_error = e
+                    continue
+                else:
+                    raise
+        if resp is None:
+            st.error(f"❌ Todos los modelos fallaron. Último error: {last_error}")
             st.stop()
-
         article = resp.choices[0].message.content
-        st.subheader("Artículo generado")
-        st.markdown(article)
-
+        # Mostrar artículo
+        st.info(f"📝 Words: {len(article.split())}")
+        st.success("✅ Article ready")
+        st.subheader("🔎 Article:")
+        st.markdown(article, unsafe_allow_html=True)
+        # Titulares Discover, HTML/MD preview y descarga...
     except Exception as e:
-        st.error(f"Error: {e}")
+        st.error(f"❌ Error: {e}")
     finally:
-        # Limpieza
-        if 'tmp_path' in locals() and os.path.exists(tmp_path):
+        if (
+            upload_type == "Video"
+            and 'tmp_path' in locals()
+            and os.path.exists(tmp_path)
+        ):
             os.remove(tmp_path)
