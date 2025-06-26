@@ -59,6 +59,7 @@ editors = {
 }
 
 categories = {
+    "[✅ ACTIVE] Immersive Experiences & Exhibits": load_prompt("prompts/category/immersive-experiences-exhibits.txt"),
     "[NOT ACTIVE] Food & Drink": load_prompt("prompts/category/food-and-drink.txt"),
     "[NOT ACTIVE] Live Shows": load_prompt("prompts/category/live-shows.txt"),
     "[NOT ACTIVE] Music Events": load_prompt("prompts/category/music-events.txt"),
@@ -66,7 +67,6 @@ categories = {
     "[NOT ACTIVE] Tourism": load_prompt("prompts/category/tourism.txt"),
     "[NOT ACTIVE] Nightlife & Party": load_prompt("prompts/category/nightlife-party.txt"),
     "[NOT ACTIVE] Family": load_prompt("prompts/category/family.txt"),
-    "Immersive Experiences & Exhibits": load_prompt("prompts/category/immersive-experiences-exhibits.txt"),
     "[NOT ACTIVE] Beauty & Wellness": load_prompt("prompts/category/beauty-wellness.txt"),
     "[NOT ACTIVE] Outdoor Activities": load_prompt("prompts/category/outdoor-activities.txt"),
     "[NOT ACTIVE] Culture": load_prompt("prompts/category/culture.txt"),
