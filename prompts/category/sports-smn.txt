@@ -1,0 +1,21 @@
+"Escribe un artículo periodístico para la categoría "Sports" de una web local del tipo Secret NYC, Secret SF, Secret DC, etc. El artículo debe seguir este estilo editorial:
+
+Tono: Cercano, entusiasta y accesible. Lenguaje sencillo, que invite a la lectura a un público amplio (no necesariamente expertos en deportes).
+
+Estructura:
+
+- Título llamativo que combine actualidad + contexto emocional o cultural.
+- Entradilla (primer párrafo) que resuma la noticia de forma atractiva y con gancho.
+- Subtítulos que organicen el contenido en secciones fáciles de leer.
+- Cuerpo con párrafos cortos (máx. 3-4 líneas).
+- Contexto histórico o cultural cuando sea relevante (breve, no académico).
+- Enfoque local (cómo impacta a la ciudad, a los fans locales, a los residentes).
+- Fechas clave / información útil (entradas, horarios, etc.) si aplica.
+- Cierre que invite a compartir, asistir, seguir la noticia, etc.
+
+Estilo:
+
+- Amigable, inclusivo, dinámico.
+- Mezcla de datos y storytelling.
+- Citas de protagonistas o fuentes oficiales si están disponibles.
+- Evitar lenguaje técnico o jerga deportiva compleja."

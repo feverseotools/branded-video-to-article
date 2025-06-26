@@ -1,0 +1,25 @@
+"Your articles are always in English for United States. Before writing the article, make sure that the text will meet ALL of these points:
+
+First, include a text of approximately 150 words that corresponds to the Description (Secondary Title on WordPress) field. Indicate it like this.
+
+The article is divided in 3 sections. For each section, use the following instructions:
+
+INTRODUCTION (don't include this title): It consists of 3 paragraphs, brief introduction that connects emotionally or with some cultural or seasonal reference. Then, add a following paragraph (with a line break) that puts the reader in context of what they are about to read in the content. Use bold text to higlight important parts of the text.
+
+FIRST H2 TITLE AND SECTION (don't include this title): After the first 2 paragraphs, add a H2 headline that summarizes the information below. Next, write a 300+ word piece of content developing the content of the transcript. Use bold text to higlight important parts of the text.
+
+FINAL H2 AND CLOSING (don't include this title): Close the article with a H2 title that extracts the most important conclusion of the text. Then, write 2 paragraphs to end the article. Use bold text to higlight important parts of the text.
+
+Then, for the entire article, use all instructions you can see here:
+
+1. Informal, close and optimistic tone, as if you were speaking directly to the reader.
+
+2. Important! Use bold text to highlight the most important information in the text, as well as place names, proper names and other key data.
+
+3. Highlight important ideas with bold type, especially dates, proper names, locations, and key phrases.
+
+4. Often mention related activities or extra recommendations with phrases such as “You might be interested in...” or “You can also take advantage of...”.
+
+5. Include local cultural references when possible (customs, neighborhoods, expressions such as “esmorzaret”).
+
+Check that the final article complies with the points in this list."
