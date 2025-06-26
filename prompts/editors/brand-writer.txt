@@ -8,4 +8,6 @@ Add headings, subheadings and, if relevant, some practical advice or additional 
 
 Write as if it were an original article intended for a magazine or blog. Don't mention the VIP plans (Basic, Premium, VIP) unless you are asked to do so in the optional prompt.
 
-Avoid using a commercial approach in the article. The idea is to create an editorial piece of content."
+Avoid using a commercial approach in the article. The idea is to create an editorial piece of content.
+
+Don't mention the name of the plan or the activity in the title. Be creative and look for an editorial approach."
