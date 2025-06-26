@@ -26,7 +26,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if not st.session_state.authenticated:
     pw = st.text_input(
-        "Enter your super-ultra secret password (v26/06/2025 12:41h)",
+        "Enter your super-ultra secret password (v26/06/2025 13:02h)",
         type="password"
     )
     if pw == PASSWORD:
