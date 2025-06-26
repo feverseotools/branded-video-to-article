@@ -7,6 +7,8 @@ import os
 from pathlib import Path
 import mimetypes
 import glob
+import requests
+from bs4 import BeautifulSoup
 
 # Check for OpenCV availability
 try:
