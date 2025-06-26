@@ -1,0 +1,20 @@
+“Write an article for the "Food and Drink" category. Immersive experiences, immersive art experiences and immersive exhibitions at the city that take exhibition appreciation to a whole new level with cutting-edge technology integrated into the art.
+
+The article should follow this editorial style:
+
+Tone: approachable, enthusiastic and accessible. Simple language, inviting reading for a broad audience.
+
+Structure:
+
+- Catchy title that combines topicality + emotional or cultural context.
+- In the lead (first paragraph), summarizing the news in an attractive and engaging way.
+- Subtitles that organize the content into easy-to-read sections.
+- Body with short paragraphs (max. 3-4 lines).
+- Historical or cultural context when relevant (brief, non-academic).
+- Key dates/useful information (tickets, times, etc.) if applicable.
+- Closing that invites sharing, attendance, follow the story, etc.
+
+Style:
+
+- Friendly, inclusive, dynamic.
+- Our goals is to get the user to buy the plan."

@@ -24,7 +24,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if not st.session_state.authenticated:
     pw = st.text_input(
-        "Enter your super-ultra secret password (v26/06/2025 11:28h)",
+        "Enter your super-ultra secret password (v26/06/2025 12:30h)",
         type="password"
     )
     if pw == PASSWORD:
@@ -36,8 +36,8 @@ if not st.session_state.authenticated:
 client = OpenAI()
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
-st.set_page_config(page_title="Convert Video into Text")
-st.title("📝 Video > Text AI Converter for SMN")
+st.set_page_config(page_title="Convert Branded Video into Text")
+st.title("📝 Branded Video > Text AI Converter for SMN")
 
 # --- CARGA DE PROMPTS EXTERNOS ---
 def load_prompt(file_path):
@@ -53,18 +53,31 @@ sites = {
 }
 
 editors = {
-    "Álvaro Llagunes": load_prompt("prompts/editors/alvaro_llagunes.txt"),
-    "Bianca Bahamondes": load_prompt("prompts/editors/bianca_bahamondes.txt"),
-    "Jorge López Torrecilla": load_prompt("prompts/editors/jorge_lopez.txt"),
-    "Alberto del Castillo": load_prompt("prompts/editors/alberto_del_castillo.txt")
+    "Fever Brand Writer": load_prompt("prompts/editors/brand-writer.txt"),
 }
 
 categories = {
-    "Gastronomy (restaurants, bars, street food)": load_prompt("prompts/category/food.txt"),
-    "Sports for Secret Media": load_prompt("prompts/category/sports-smn.txt"),
-    "NYC Book Club - Community": load_prompt("prompts/category/nyc-book-club.txt"),
-    "Housing situation in big cities": load_prompt("prompts/category/problemas-vivienda.txt"),
-    "Generic (use with caution)": load_prompt("prompts/category/generic.txt")
+    "Food & Drink": load_prompt("prompts/category/food-and-drink.txt"),
+    "Live Shows": load_prompt("prompts/category/live-shows.txt"),
+    "Music Events": load_prompt("prompts/category/music-events.txt"),
+    "Activities": load_prompt("prompts/category/activities.txt"),
+    "Tourism": load_prompt("prompts/category/tourism.txt"),
+    "Nightlife & Party": load_prompt("prompts/category/nightlife-party.txt"),
+    "Family": load_prompt("prompts/category/family.txt"),
+    "Immersive Experiences & Exhibits": load_prompt("prompts/category/immersive-experiences-exhibits.txt"),
+    "Beauty & Wellness": load_prompt("prompts/category/beauty-wellness.txt"),
+    "Outdoor Activities": load_prompt("prompts/category/outdoor-activities.txt"),
+    "Culture": load_prompt("prompts/category/culture.txt"),
+    "Fever Originals": load_prompt("prompts/category/fever-originals.txt"),
+    "Candelight Concerts": load_prompt("prompts/category/candelight-concerts.txt"),
+    "Courses, Talks & Conventions": load_prompt("prompts/category/courses-talks-conventions.txt"),
+    "Fabrik": load_prompt("prompts/category/fabrik.txt"),
+    "Cinema": load_prompt("prompts/category/cinema.txt"),
+    "Flamenco": load_prompt("prompts/category/flamenco.txt"),
+    "Ballet of Lights": load_prompt("prompts/category/ballet-of-lights.txt"),
+    "Candelight Spring Concerts": load_prompt("prompts/category/candelight-spring-concerts.txt"),
+    "Sports Events": load_prompt("prompts/category/sports-events.txt"),
+    "Meetups": load_prompt("prompts/category/meetups.txt"),
 }
 
 languages = {
