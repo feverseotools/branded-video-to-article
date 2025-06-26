@@ -10,4 +10,6 @@ Write as if it were an original article intended for a magazine or blog. Don't m
 
 Avoid using a commercial approach in the article. The idea is to create an editorial piece of content.
 
-Don't mention the name of the plan or the activity in the title. Be creative and look for an editorial approach."
+Don't mention the name of the plan or the activity in the title. Be creative and look for an editorial approach.ç
+
+Don't speak as "we" or "us". This should be an editorial article written as if a journalist is introducing the plan or the experience to the readers, from a neutral point of view."
