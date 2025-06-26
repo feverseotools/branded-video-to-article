@@ -26,7 +26,7 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if not st.session_state.authenticated:
     pw = st.text_input(
-        "Enter your super-ultra secret password (v26/06/2025 13:02h)",
+        "Enter your super-ultra secret password (v26/06/2025 15:15h)",
         type="password"
     )
     if pw == PASSWORD:
@@ -59,27 +59,27 @@ editors = {
 }
 
 categories = {
-    "Food & Drink": load_prompt("prompts/category/food-and-drink.txt"),
-    "Live Shows": load_prompt("prompts/category/live-shows.txt"),
-    "Music Events": load_prompt("prompts/category/music-events.txt"),
-    "Activities": load_prompt("prompts/category/activities.txt"),
-    "Tourism": load_prompt("prompts/category/tourism.txt"),
-    "Nightlife & Party": load_prompt("prompts/category/nightlife-party.txt"),
-    "Family": load_prompt("prompts/category/family.txt"),
+    "[NOT ACTIVE] Food & Drink": load_prompt("prompts/category/food-and-drink.txt"),
+    "[NOT ACTIVE] Live Shows": load_prompt("prompts/category/live-shows.txt"),
+    "[NOT ACTIVE] Music Events": load_prompt("prompts/category/music-events.txt"),
+    "[NOT ACTIVE] Activities": load_prompt("prompts/category/activities.txt"),
+    "[NOT ACTIVE] Tourism": load_prompt("prompts/category/tourism.txt"),
+    "[NOT ACTIVE] Nightlife & Party": load_prompt("prompts/category/nightlife-party.txt"),
+    "[NOT ACTIVE] Family": load_prompt("prompts/category/family.txt"),
     "Immersive Experiences & Exhibits": load_prompt("prompts/category/immersive-experiences-exhibits.txt"),
-    "Beauty & Wellness": load_prompt("prompts/category/beauty-wellness.txt"),
-    "Outdoor Activities": load_prompt("prompts/category/outdoor-activities.txt"),
-    "Culture": load_prompt("prompts/category/culture.txt"),
-    "Fever Originals": load_prompt("prompts/category/fever-originals.txt"),
-    "Candelight Concerts": load_prompt("prompts/category/candelight-concerts.txt"),
-    "Courses, Talks & Conventions": load_prompt("prompts/category/courses-talks-conventions.txt"),
-    "Fabrik": load_prompt("prompts/category/fabrik.txt"),
-    "Cinema": load_prompt("prompts/category/cinema.txt"),
-    "Flamenco": load_prompt("prompts/category/flamenco.txt"),
-    "Ballet of Lights": load_prompt("prompts/category/ballet-of-lights.txt"),
-    "Candelight Spring Concerts": load_prompt("prompts/category/candelight-spring-concerts.txt"),
-    "Sports Events": load_prompt("prompts/category/sports-events.txt"),
-    "Meetups": load_prompt("prompts/category/meetups.txt"),
+    "[NOT ACTIVE] Beauty & Wellness": load_prompt("prompts/category/beauty-wellness.txt"),
+    "[NOT ACTIVE] Outdoor Activities": load_prompt("prompts/category/outdoor-activities.txt"),
+    "[NOT ACTIVE] Culture": load_prompt("prompts/category/culture.txt"),
+    "[NOT ACTIVE] Fever Originals": load_prompt("prompts/category/fever-originals.txt"),
+    "[NOT ACTIVE] Candelight Concerts": load_prompt("prompts/category/candelight-concerts.txt"),
+    "[NOT ACTIVE] Courses, Talks & Conventions": load_prompt("prompts/category/courses-talks-conventions.txt"),
+    "[NOT ACTIVE] Fabrik": load_prompt("prompts/category/fabrik.txt"),
+    "[NOT ACTIVE] Cinema": load_prompt("prompts/category/cinema.txt"),
+    "[NOT ACTIVE] Flamenco": load_prompt("prompts/category/flamenco.txt"),
+    "[NOT ACTIVE] Ballet of Lights": load_prompt("prompts/category/ballet-of-lights.txt"),
+    "[NOT ACTIVE] Candelight Spring Concerts": load_prompt("prompts/category/candelight-spring-concerts.txt"),
+    "[NOT ACTIVE] Sports Events": load_prompt("prompts/category/sports-events.txt"),
+    "[NOT ACTIVE] Meetups": load_prompt("prompts/category/meetups.txt"),
 }
 
 languages = {
